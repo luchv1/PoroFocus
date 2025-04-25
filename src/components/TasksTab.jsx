@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from "react";
 import { Briefcase, BookOpen, Dumbbell, Plus, ChefHat, Clapperboard } from "lucide-react";
+import useLocalStorage from "../hooks/useLocalStorage";
 import Input from "./Input"
 import Task from "./Task";
 import Button from "./Button"
@@ -27,24 +28,24 @@ const ICONS = [
     }
 ];
 export default function TasksTab() {
-    const [tasks, setTasks] = useState([]);
+    const [tasks, setTasks] = useLocalStorage('tasks', []);
     const [title, setTitle] = useState("");
-    const [selectedType, setSelectedType] = useState(ICONS[0]);
+    const [selectedType, setSelectedType] = useState(0);
     const inputRef = useRef(null);
 
     // save tasks to localstorage
 
     const handleAddTask = (() => {
-            if (!title || !selectedType) {
+            if (!title) {
                 return;
             }
-
             const newTask = {
                 id: String(Date.now()),
                 title: title,
-                icon: selectedType.icon,
+                icon: selectedType,
                 status: false
             }
+
             // add new task to the title
             setTasks(prev => [
                 ...prev, newTask
@@ -84,11 +85,11 @@ export default function TasksTab() {
             </div>
             {/* display icon */}
             <div className="flex justify-around gap-2 py-2">
-                {ICONS.map(item => 
+                {ICONS.map((item, index) => 
                     <Button
                         key={item.type}
-                        className={item.type === selectedType.type ? `btn btn-neutral` : `btn btn-outline`}
-                        onClick={() => setSelectedType({type: item.type, icon: item.icon})}
+                        className={index === selectedType ? `btn btn-neutral` : `btn btn-outline`}
+                        onClick={() => setSelectedType(index)}
                     >{item.icon}</Button>
                 )}
             </div>
@@ -98,7 +99,7 @@ export default function TasksTab() {
                     <Task
                         key={task.id}
                         title={task.title}
-                        icon={task.icon}
+                        icon={ICONS[task.icon].icon}
                         status={task.status}
                         onDelete={() => handleDeleteTask(task.id)}
                         onDone={() => changeTaskStatus(task.id)}

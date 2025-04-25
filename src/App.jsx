@@ -239,12 +239,12 @@ export default function App() {
     },
   ];
   return (
-    <div className="py-8 flex flex-col items-center gap-2">
+    <div className="py-8 flex flex-col items-center gap-2 card shadow-sm">
       <div className="container mx-auto px-2 text-center">
         <h1 className="text-4xl font-extrabold text-center">PORO FOCUS</h1>
         <h3 className="font-light text-gray-500">Stay productive with cute companions</h3>
       </div>
-      <div className="flex-col md:shadow-sm md:p-4 mt-5 flex items-center rounded-xl">
+      <div className="flex-col md:shadow-sm md:p-4 flex items-center rounded-xl">
 
         {/* Focus Mode */}
         <div className="flex justify-end w-96">

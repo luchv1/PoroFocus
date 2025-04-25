@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from "react";
-import { Briefcase, BookOpen, Dumbbell, Calendar, ChefHat, Clapperboard } from "lucide-react";
+import { Briefcase, BookOpen, Dumbbell, Plus, ChefHat, Clapperboard } from "lucide-react";
 import Input from "./Input"
 import Task from "./Task";
 import Button from "./Button"
@@ -66,9 +66,9 @@ export default function TasksTab() {
 
     return (
         <div>
-            <div className="flex w-100">
+            <div className="flex w-100 justify-center space-x-2 m-2">
                 <Input
-                    classes="input input-neutral"
+                    classes="input input-neutral input input-bordered"
                     placeholder="Add a new task..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -76,14 +76,14 @@ export default function TasksTab() {
                 />
                 <Button
                     disabled={title ? false : true}
-                    classes="btn btn-neural"
+                    classes="btn btn-neutral"
                     onClick={handleAddTask}
                 >
-                    Add
+                    <Plus />
                 </Button>
             </div>
             {/* display icon */}
-            <div className="flex gap-2 py-2">
+            <div className="flex justify-around gap-2 py-2">
                 {ICONS.map(item => 
                     <Button
                         key={item.type}

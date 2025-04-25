@@ -129,7 +129,7 @@ export default function App() {
     }
 
     const timer = setInterval(() => {
-      setTimeRemaining(prev => Math.max(0, prev - 100));
+      setTimeRemaining(prev => Math.max(0, prev - 1));
     }, 1000);
 
     return () => clearInterval(timer);
@@ -202,7 +202,7 @@ export default function App() {
       key: "Timer",
       label: <div className={TABS_BTN_BLOCK_CLASSES}><AlarmClock /> Timer</div>,
       content: (
-        <div>
+        <div className="card shadow-sm">
           <div className="flex flex-col mb-1">
             <div className="flex justify-between flex-row gap-2 py-2">
               <div className="font-bold flex gap-2"> <Bell /> Notification </div>
@@ -239,12 +239,12 @@ export default function App() {
     },
   ];
   return (
-    <div className="py-8 flex flex-col items-center gap-2 card shadow-sm">
+    <div className="py-8 flex flex-col items-center gap-2">
       <div className="container mx-auto px-2 text-center">
         <h1 className="text-4xl font-extrabold text-center">PORO FOCUS</h1>
         <h3 className="font-light text-gray-500">Stay productive with cute companions</h3>
       </div>
-      <div className="flex-col md:shadow-sm md:p-4 flex items-center rounded-xl">
+      <div className="flex-col md:shadow-md md:p-4 flex items-center rounded-xl card">
 
         {/* Focus Mode */}
         <div className="flex justify-end w-96">

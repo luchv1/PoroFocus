@@ -18,7 +18,7 @@ export default function Tabs ({tabs, init}) {
                         </Button>
                     )}
                 </div>
-                <div className="container mt-3 p-4">
+                <div className="bg-gray-100 rounded-xl container mt-3 p-4">
                     {tabs.map((tab) => 
                         activeTab === tab.key ? <div key={tab.key}>{tab.content}</div> : null
                     )}

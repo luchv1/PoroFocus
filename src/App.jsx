@@ -5,6 +5,7 @@ import Range from "./components/Range";
 import TasksTab from "./components/TasksTab";
 import Button from "./components/Button";
 import FocusMode from "./components/FocusMode";
+import useLocalStorage from "./hooks/useLocalStorage"
 
 const APP_TITLE = "Poro Focus";
 const TABS_BTN_BLOCK_CLASSES = "p-2 flex gap-2 items-center justify-center";
@@ -36,10 +37,11 @@ const LOCAL_STORAGE_KEY = "timerSetting";
 
 export default function App() {
   // state manager
-  const [workDuration, setWorkDuration] = useState(25);
-  const [breakDuration, setBreakDuration] = useState(5);
   const [isTimeEditMode, setIsTimeEditMode] = useState(true);
-  const [isSoundEnable, setIsSoundEnable] = useState(false);
+  const [isSoundEnable, setIsSoundEnable] = useLocalStorage('isSoundEnable', true);
+  const [workDuration, setWorkDuration] = useLocalStorage('workDuration', 25);
+  const [breakDuration, setBreakDuration] = useLocalStorage('breakDuration', 5);
+
   const [isRunning, setIsRunning] = useState(false);
   const [isWorkMode, setIsWorkMode] = useState(true);
   const [timeRemaining, setTimeRemaining] = useState(0);

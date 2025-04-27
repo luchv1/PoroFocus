@@ -27,8 +27,7 @@ const ICONS = [
         icon: <Clapperboard />
     }
 ];
-export default function TasksTab() {
-    const [tasks, setTasks] = useLocalStorage('tasks', []);
+export default function TasksTab({tasks, setTasks}) {
     const [title, setTitle] = useState("");
     const [selectedType, setSelectedType] = useState(0);
     const inputRef = useRef(null);

@@ -1,7 +1,8 @@
 import { X }  from "lucide-react"
 import { useEffect } from "react";
+import Task from "./Task";
 
-export default function FocusMode({ isOpen, onClose, timeDisplay }) {
+export default function FocusMode({ isOpen, onClose, timeDisplay, tasks, onChangeStatus }) {
     useEffect(() => {
         const handleEscKey = (event) => {
             if (isOpen && event.key === "Escape") {
@@ -15,7 +16,6 @@ export default function FocusMode({ isOpen, onClose, timeDisplay }) {
         };
         }, [isOpen, onClose]);
 
-        const tasks = "";
         if (!isOpen) return null;
     return (
         <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-50">
@@ -35,9 +35,17 @@ export default function FocusMode({ isOpen, onClose, timeDisplay }) {
 
                 {/* Display task */}
                 <div className="text-2xl mb-12 text-center max-w-2xl">
-                    {tasks && tasks.map(task =>
-                        <span>task.title</span>
+                <div>
+                    {tasks && tasks.map(task => 
+                        <Task
+                            key={task.id}
+                            title={task.title}
+                            status={task.status}
+                            onDone={() => onChangeStatus(task.id)}
+                            isFocusMode
+                        />
                     )}
+                </div>
                 </div>
             </div>
         </div>

@@ -41,6 +41,7 @@ export default function App() {
   const [isSoundEnable, setIsSoundEnable] = useLocalStorage('isSoundEnable', true);
   const [workDuration, setWorkDuration] = useLocalStorage('workDuration', 25);
   const [breakDuration, setBreakDuration] = useLocalStorage('breakDuration', 5);
+  const [tasks, setTasks] = useLocalStorage('tasks', []);
 
   const [isRunning, setIsRunning] = useState(false);
   const [isWorkMode, setIsWorkMode] = useState(true);
@@ -191,6 +192,12 @@ export default function App() {
     setIsTimeEditMode(true);
   }, []);
 
+  const changeTaskStatus = ((id) => {
+    setTasks(prev =>
+        prev.map(task => task.id === id ?
+            {...task, status: !task.status} : task));
+})
+  
   // Format time for display (mm:ss)
   const formatTime = useCallback((seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -237,7 +244,10 @@ export default function App() {
     {
       key: "Tasks",
       label: <div className={TABS_BTN_BLOCK_CLASSES}><CircleCheckBig /> Tasks</div>,
-      content: <TasksTab/>
+      content: <TasksTab
+        tasks={tasks}
+        setTasks={setTasks}
+      />
     },
   ];
   return (
@@ -304,6 +314,8 @@ export default function App() {
             isOpen={isFocusMode}
             onClose={() => setIsFocusMode(false)}
             timeDisplay={formatTime(displayTime)}
+            tasks={tasks}
+            onChangeStatus={changeTaskStatus}
           />
       </div>
     </div>

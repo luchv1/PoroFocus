@@ -255,7 +255,7 @@ export default function App() {
     },
   ];
   return (
-    <div className="py-8 flex flex-col items-center gap-2">
+    <div className="py-8 flex bg-white flex-col items-center gap-2">
       <div className="container mx-auto px-2 text-center">
         <h1 className="text-4xl font-extrabold text-center">PORO FOCUS</h1>
         <h3 className="font-light text-gray-500">Stay productive with cute companions</h3>

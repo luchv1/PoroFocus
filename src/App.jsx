@@ -256,24 +256,25 @@ export default function App() {
   ];
   return (
     <div className="py-8 flex bg-white flex-col items-center gap-2">
-      <div className="container mx-auto px-2 text-center">
+      <div className="container mx-auto px-2 text-center w-full">
         <h1 className="text-4xl font-extrabold text-center">PORO FOCUS</h1>
         <h3 className="font-light text-gray-500">Stay productive with cute companions</h3>
       </div>
-      <div className="flex-col md:shadow-md md:p-4 flex items-center rounded-xl card">
+      <div className="flex-col flex items-center">
 
-        {/* Focus Mode */}
-        <div className="flex justify-end w-96">
-          <Button onClick={() => setIsFocusMode(true)}
-              className="text-neutral-500 ml-auto btn btn-ghost border-transparent focus:outline-none focus:bg-transparent hover:shadow-none hover:text-neutral hover:bg-transparent focus:ring-0 active:bg-transparent">
-            <Maximize size={20}/>
-          </Button>
-        </div>
         {/* Mode indicator */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full justify-center p-4">
           {isWorkMode ? <AlarmClock /> : <Coffee />}
           <h1 className="text-xl">{isWorkMode ? "Work Time" : "Break Time"}</h1>
-        </div>
+          {/* Focus Mode */}
+          <Button onClick={() => setIsFocusMode(true)}
+            className="text-neutral-500 mx-2
+            border-transparent focus:outline-none focus:bg-transparent
+            hover:shadow-none hover:text-neutral hover:bg-transparent
+            focus:ring-0 active:bg-transparent">
+            <Maximize size={20}/>
+          </Button>
+          </div>
 
         {/* Timer display */}
         <span className="text-9xl font-bold">
@@ -288,7 +289,7 @@ export default function App() {
         </div>
 
         {/* Control buttons */}
-        <div className="flex m-6 justify-evenly w-96">
+        <div className="flex m-6 justify-center gap-6 w-full">
           {!isRunning && (
             <button onClick={resetTimer} className={BUTTON_CLASSES}>
               <RotateCcw />

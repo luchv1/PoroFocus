@@ -66,9 +66,9 @@ export default function TasksTab({tasks, setTasks}) {
 
     return (
         <div>
-            <div className="flex w-100 justify-center space-x-2 m-2">
+            <div className="flex w-100 justify-center space-x-2 my-2">
                 <Input
-                    classes="input input-neutral input input-bordered"
+                    classes="input input-neutral input input-bordered focus:outline-none"
                     placeholder="Add a new task..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -87,7 +87,7 @@ export default function TasksTab({tasks, setTasks}) {
                 {ICONS.map((item, index) => 
                     <Button
                         key={item.type}
-                        className={index === selectedType ? `btn btn-neutral` : `btn btn-outline`}
+                        className={index === selectedType ? `btn btn-neutral` : `btn btn-outline bg-white`}
                         onClick={() => setSelectedType(index)}
                     >{item.icon}</Button>
                 )}

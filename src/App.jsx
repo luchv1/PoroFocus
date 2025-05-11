@@ -131,8 +131,12 @@ export default function App() {
       }
     }
 
+    // reduce time
     const timer = setInterval(() => {
-      setTimeRemaining(prev => Math.max(0, prev - 1));
+      setTimeRemaining(prev => {
+        const newValue = Math.max(0, prev - 1);
+        return newValue;
+      });
     }, 1000);
 
     return () => clearInterval(timer);

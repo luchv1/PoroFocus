@@ -255,13 +255,16 @@ export default function App() {
     },
   ];
   return (
-    <div className="py-8 flex bg-white flex-col items-center gap-2">
-      <div className="container mx-auto px-2 text-center w-full">
-        <h1 className="text-4xl font-extrabold text-center">PORO FOCUS</h1>
-        <h3 className="font-light text-gray-500">Stay productive with cute companions</h3>
+    <div className="flex bg-white flex-col items-center gap-2">
+      <div className="container mx-auto text-center justify-between flex w-full border-b p-4">
+          <div className="flex gap-2">
+          <img src="../icon.png" alt="" className="w-8 h-8"/>
+          <h1 className="text-md mt-2 font-extrabold text-center">PORO FOCUS</h1>
+          </div>
+          <h1 className="mt-2">App By <a className="underline text-decoration-solid" href="https://www.tiktok.com/@havietluc"> Ha Viet Luc</a></h1>
       </div>
       <div className="flex-col flex items-center">
-
+        <h3 className="font-light text-xl text-gray-500">Stay productive with cute companions</h3>
         {/* Mode indicator */}
         <div className="flex gap-2 w-full justify-center p-4">
           {isWorkMode ? <AlarmClock /> : <Coffee />}

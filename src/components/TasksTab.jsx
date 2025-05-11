@@ -68,7 +68,7 @@ export default function TasksTab({tasks, setTasks}) {
         <div>
             <div className="flex w-100 justify-center space-x-2 my-2">
                 <Input
-                    classes="input input-neutral input input-bordered focus:outline-none"
+                    classes="input input-neutral input input-bordered focus:outline-none text-base"
                     placeholder="Add a new task..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}

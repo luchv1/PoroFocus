@@ -12,9 +12,9 @@ const TABS_BTN_BLOCK_CLASSES = "p-2 flex gap-2 items-center justify-center";
 const BUTTON_CLASSES = "btn btn-circle btn-xl btn-neutral transition-transform duration-300 hover:scale-110 hover:shadow-lg";
 const ICONS = [
   "🫠",
-  "😑",
   "🤓",
-  "🥱"
+  "🥱",
+  "😤"
 ]
 const SOUNDS = {
   END_WORK: "/sounds/BreakSound.MP3",
@@ -33,7 +33,6 @@ const DEFAULT_SETTING = {
   tasks: []
 }
 
-const LOCAL_STORAGE_KEY = "timerSetting";
 
 export default function App() {
   // state manager
@@ -48,7 +47,8 @@ export default function App() {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [icon, setIcon] = useState(ICONS[0]);
-
+  const timeRemainingRef = useRef(0); // Holds actual seconds
+  const [displayTime, setDisplayTime] = useState(0);
 
   // Refs for audio elements
   // Ref to audio element, render without re-initializing, ensuring that the same audio objects are used in lifecycle
@@ -56,7 +56,6 @@ export default function App() {
   const workEndSoundRef = useRef(null);
   const breakEndSoundRef = useRef(null);
 
-  const displayTime = (!isRunning && timeRemaining === 0) ? (isWorkMode ? workDuration * 60 : breakDuration * 60) : timeRemaining;
   // Initialize audio elements
   useEffect(() => {
     workEndSoundRef.current = new Audio(SOUNDS.END_WORK);
@@ -74,26 +73,19 @@ export default function App() {
       workEndSoundRef.current = null;
       breakEndSoundRef.current = null;
     }
-  })
+  },[]);
 
-  // play sound
   const playSound = useCallback((soundRef) => {
     if (isSoundEnable && soundRef.current) {
       soundRef.current.currentTime = 0;
       soundRef.current.play().catch(err => console.log("Audio play error:", err));
     }
-  }, [isSoundEnable])
+  }, [isSoundEnable]);
 
   // Update document title based on timer state
   useEffect(() => {
-    if (isRunning) {
-      const modePrefix = isWorkMode ? " Work" : " Break";
-      const runningTitle = formatTime(timeRemaining) + modePrefix;
-      document.title = runningTitle;
-    } else {
-      document.title = APP_TITLE
-    }
-  },)
+    document.title = APP_TITLE
+  }, []);
 
   // Update icon based on work duration
   useEffect(() => {
@@ -111,42 +103,50 @@ export default function App() {
   useEffect(() => {
     if (!isRunning) return;
 
-    // Switch modes if timer reaches zero
-    if (timeRemaining === 0) {
-      if (isWorkMode) {
-        // play sounds the end work mode
-        playSound(workEndSoundRef);
-        // wait 2 seconds before staring break
-        setTimeout(() => {
-          setTimeRemaining(minutesToSeconds(breakDuration));
-          setIsWorkMode(false);
-        }, 3000);
-      } else {
-        playSound(breakEndSoundRef);
-        // wait 2 seconds before starting work
-        setTimeout(() => {
-          setTimeRemaining(minutesToSeconds(workDuration));
-          setIsWorkMode(true);
-        }, 3000);
-      }
-    }
+    const startTime = Date.now();
+    const expectedEnd = startTime + timeRemainingRef.current * 1000;
 
-    // reduce time
     const timer = setInterval(() => {
-      setTimeRemaining(prev => {
-        const newValue = Math.max(0, prev - 1);
-        return newValue;
-      });
-    }, 1000);
+      const secondsLeft = Math.max(0, Math.round((expectedEnd - Date.now()) / 1000));
+      timeRemainingRef.current = secondsLeft;
+      setDisplayTime(timeRemainingRef.current);
+      const modePrefix = isWorkMode ? " - Work" : " - Break";
+      const runningTitle = formatTime(secondsLeft) + modePrefix;
+      document.title = runningTitle;
 
-    return () => clearInterval(timer);
-  }, [isRunning, timeRemaining, isWorkMode, workDuration, breakDuration]);
+      if (secondsLeft === 0) {
+        clearInterval(timer); // Stop the interval before switching
+
+        if (isWorkMode) {
+          playSound(workEndSoundRef);
+          setTimeout(() => {
+            timeRemainingRef.current = minutesToSeconds(breakDuration);
+            setIsWorkMode(false);
+            setDisplayTime(timeRemainingRef.current);
+          }, 3000);
+        } else {
+          playSound(breakEndSoundRef);
+          setTimeout(() => {
+          timeRemainingRef.current = minutesToSeconds(workDuration);
+          setIsWorkMode(true);
+          setDisplayTime(timeRemainingRef.current);
+
+          }, 3000);
+        }
+      }
+    }, 1000); // Still run every second, but calculate based on real time
+
+    return () => {
+      document.title = APP_TITLE
+      clearInterval(timer) };
+  }, [isRunning, isWorkMode, workDuration, breakDuration]);
+
 
   // Handle work duration change
   const handleWorkDurationChange = useCallback((newValue) => {
     setIsRunning(false);
     setWorkDuration(newValue);
-    setTimeRemaining(0);
+    timeRemainingRef.current = 0;
     setIsWorkMode(true);
     setIsTimeEditMode(true);
   }, []);
@@ -155,7 +155,7 @@ export default function App() {
   const handleBreakDurationChange = useCallback((newValue) => {
     setIsRunning(false);
     setBreakDuration(newValue);
-    setTimeRemaining(0);
+    timeRemainingRef.current = 0;
     setIsWorkMode(false);
     setIsTimeEditMode(true);
   }, []);
@@ -165,34 +165,24 @@ export default function App() {
   const toggleMode = useCallback(() => {
     setIsWorkMode(prev => !prev);
     setIsTimeEditMode(true);
-    setTimeRemaining(0);
+    timeRemainingRef.current = 0;
   }, []);
 
   // Start or pause the timer
   const toggleTimer = useCallback(() => {
-    if (!isRunning && timeRemaining === 0) {
-      setTimeRemaining(minutesToSeconds(isWorkMode ? workDuration : breakDuration));
+    if (!isRunning) {
+      timeRemainingRef.current = minutesToSeconds(isWorkMode ? workDuration : breakDuration);
+      setDisplayTime(timeRemainingRef.current);
       setIsTimeEditMode(false);
     }
     setIsRunning(prev => !prev);
-
-    if(!isRunning) {
-      const newSetting = {
-        ...timerSetting,
-        workDuration: workDuration,
-        breakDuration: breakDuration,
-        notification: isSoundEnable,
-      }
-      setTimerSetting(newSetting);
-    }
-
-  }, [isRunning, timeRemaining, isWorkMode, workDuration, breakDuration]);
+  }, [isRunning, isWorkMode, workDuration, breakDuration]);
 
   // Reset the timer
   const resetTimer = useCallback(() => {
     setIsWorkMode(true);
     setIsRunning(false);
-    setTimeRemaining(0);
+    timeRemainingRef.current = 0;
     setIsTimeEditMode(true);
   }, []);
 
@@ -264,7 +254,7 @@ export default function App() {
           <h1 className="mt-2">App By <a className="underline text-decoration-solid" href="https://www.tiktok.com/@havietluc"> Ha Viet Luc</a></h1>
       </div>
       <div className="flex-col flex items-center">
-        <h3 className="font-light text-xl text-gray-500">Stay productive with cute companions</h3>
+        <h3 className="font-light text-sm text-gray-500">Stay productive with cute companions</h3>
         {/* Mode indicator */}
         <div className="flex gap-2 w-full justify-center p-4">
           {isWorkMode ? <AlarmClock /> : <Coffee />}

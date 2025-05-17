@@ -1,7 +1,6 @@
 'use client'
-import { useEffect, useRef, useState } from "react";
-import { Briefcase, BookOpen, Dumbbell, Plus, ChefHat, Clapperboard } from "lucide-react";
-import useLocalStorage from "../hooks/useLocalStorage";
+import { useRef, useState } from "react";
+import { Briefcase, ChevronsLeftRightEllipsis, BicepsFlexed, Plus, ChefHat, Clapperboard, School } from "lucide-react";
 import Input from "./Input"
 import Task from "./Task";
 import Button from "./Button"
@@ -12,11 +11,11 @@ const ICONS = [
     },
     {
         type: 'study',
-        icon: <BookOpen />
+        icon: <ChevronsLeftRightEllipsis />
     },
     {
         type: 'exercise',
-        icon: <Dumbbell />
+        icon: <BicepsFlexed />
     },
     {
         type: 'cook',
@@ -25,15 +24,20 @@ const ICONS = [
     {
         type: 'firm',
         icon: <Clapperboard />
+    },
+    {
+        type: 'school',
+        icon: <School />
     }
 ];
+
+const classAnimation = "transition-transform duration-300 hover:scale-110";
 export default function TasksTab({tasks, setTasks}) {
     const [title, setTitle] = useState("");
     const [selectedType, setSelectedType] = useState(0);
     const inputRef = useRef(null);
 
     // save tasks to localstorage
-
     const handleAddTask = (() => {
             if (!title) {
                 return;
@@ -87,7 +91,7 @@ export default function TasksTab({tasks, setTasks}) {
                 {ICONS.map((item, index) => 
                     <Button
                         key={item.type}
-                        className={index === selectedType ? `btn btn-neutral` : `btn btn-outline bg-white`}
+                        className={index === selectedType ? `btn btn-circle btn-neutral ${classAnimation}` : `btn btn-circle bg-white ${classAnimation}`}
                         onClick={() => setSelectedType(index)}
                     >{item.icon}</Button>
                 )}

@@ -10,12 +10,6 @@ import useLocalStorage from "./hooks/useLocalStorage"
 const APP_TITLE = "Poro Focus";
 const TABS_BTN_BLOCK_CLASSES = "p-2 flex gap-2 items-center justify-center";
 const BUTTON_CLASSES = "btn btn-circle btn-xl btn-neutral transition-transform duration-300 hover:scale-110 hover:shadow-lg";
-const ICONS = [
-  "🫠",
-  "🤓",
-  "🥱",
-  "😤"
-]
 const SOUNDS = {
   END_WORK: "/sounds/BreakSound.MP3",
   END_BREAK: "/sounds/WorkSound.MP3"
@@ -25,14 +19,6 @@ const SOUNDS = {
 function minutesToSeconds(minutes) {
   return minutes * 60;
 }
-
-const DEFAULT_SETTING = {
-  workDuration: 25,
-  breakDuration: 5,
-  notification: true,
-  tasks: []
-}
-
 
 export default function App() {
   // state manager
@@ -44,9 +30,7 @@ export default function App() {
 
   const [isRunning, setIsRunning] = useState(false);
   const [isWorkMode, setIsWorkMode] = useState(true);
-  const [timeRemaining, setTimeRemaining] = useState(0);
   const [isFocusMode, setIsFocusMode] = useState(false);
-  const [icon, setIcon] = useState(ICONS[0]);
   const timeRemainingRef = useRef(0); // Holds actual seconds
   const [displayTime, setDisplayTime] = useState(0);
 
@@ -86,19 +70,6 @@ export default function App() {
   useEffect(() => {
     document.title = APP_TITLE
   }, []);
-
-  // Update icon based on work duration
-  useEffect(() => {
-    if (workDuration <= 25) {
-      setIcon(ICONS[0]);
-    } else if (workDuration <= 45) {
-      setIcon(ICONS[1]);
-    } else if (workDuration <= 70) {
-      setIcon(ICONS[2]);
-    } else {
-      setIcon(ICONS[3]);
-    }
-  }, [workDuration]);
 
   useEffect(() => {
     if (!isRunning) return;
@@ -156,6 +127,7 @@ export default function App() {
     setIsRunning(false);
     setBreakDuration(newValue);
     timeRemainingRef.current = 0;
+    setDisplayTime(timeRemainingRef.current);
     setIsWorkMode(false);
     setIsTimeEditMode(true);
   }, []);
@@ -165,7 +137,8 @@ export default function App() {
   const toggleMode = useCallback(() => {
     setIsWorkMode(prev => !prev);
     setIsTimeEditMode(true);
-    timeRemainingRef.current = 0;
+    timeRemainingRef.current = minutesToSeconds(isWorkMode ? workDuration : breakDuration);
+    setDisplayTime(timeRemainingRef.current);
   }, []);
 
   // Start or pause the timer
@@ -180,9 +153,9 @@ export default function App() {
 
   // Reset the timer
   const resetTimer = useCallback(() => {
-    setIsWorkMode(true);
     setIsRunning(false);
-    timeRemainingRef.current = 0;
+    timeRemainingRef.current = minutesToSeconds(isWorkMode ? workDuration : breakDuration);
+    setDisplayTime(timeRemainingRef.current);
     setIsTimeEditMode(true);
   }, []);
 
@@ -260,7 +233,7 @@ export default function App() {
           {isWorkMode ? <AlarmClock /> : <Coffee />}
           <h1 className="text-xl">{isWorkMode ? "Work Time" : "Break Time"}</h1>
           {/* Focus Mode */}
-          <Button onClick={() => setIsFocusMode(true)}
+          <Button disabled = {!isRunning} onClick={() => setIsFocusMode(true)}
             className="text-neutral-500 mx-2
             border-transparent focus:outline-none focus:bg-transparent
             hover:shadow-none hover:text-neutral hover:bg-transparent
@@ -270,16 +243,16 @@ export default function App() {
           </div>
 
         {/* Timer display */}
-        <span className="text-9xl font-bold">
+        <span className="text-9xl font-bold transition-transform duration-300 hover:scale-110">
           {isTimeEditMode ?
             `${String(isWorkMode ? workDuration : breakDuration).padStart(2, '0')}:00` :
             formatTime(displayTime)}
         </span>
 
         {/* Icon display */}
-        <div className="card text-6xl py-4">
+        {/* <div className="card text-6xl py-4">
           <h1 className="transition-transform duration-150">{icon}</h1>
-        </div>
+        </div> */}
 
         {/* Control buttons */}
         <div className="flex m-6 justify-center gap-6 w-full">

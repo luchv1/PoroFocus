@@ -80,10 +80,9 @@ export default function App() {
     const timer = setInterval(() => {
       const secondsLeft = Math.max(0, Math.round((expectedEnd - Date.now()) / 1000));
       timeRemainingRef.current = secondsLeft;
-      setDisplayTime(timeRemainingRef.current);
+      setDisplayTime(secondsLeft);
       const modePrefix = isWorkMode ? " - Work" : " - Break";
-      const runningTitle = formatTime(secondsLeft) + modePrefix;
-      document.title = runningTitle;
+      document.title = formatTime(secondsLeft) + modePrefix;
 
       if (secondsLeft === 0) {
         clearInterval(timer); // Stop the interval before switching

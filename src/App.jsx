@@ -66,11 +66,6 @@ export default function App() {
     }
   }, [isSoundEnable]);
 
-  // Update document title based on timer state
-  useEffect(() => {
-    document.title = APP_TITLE
-  }, []);
-
   useEffect(() => {
     if (!isRunning) return;
 
@@ -82,7 +77,8 @@ export default function App() {
       timeRemainingRef.current = secondsLeft;
       setDisplayTime(secondsLeft);
       const modePrefix = isWorkMode ? " - Work" : " - Break";
-      document.title = formatTime(secondsLeft) + modePrefix;
+      const runningTitle = formatTime(secondsLeft) + modePrefix;
+      document.title = runningTitle;
 
       if (secondsLeft === 0) {
         clearInterval(timer); // Stop the interval before switching
@@ -90,18 +86,17 @@ export default function App() {
         if (isWorkMode) {
           playSound(workEndSoundRef);
           setTimeout(() => {
-            timeRemainingRef.current = minutesToSeconds(breakDuration);
-            setIsWorkMode(false);
-            setDisplayTime(timeRemainingRef.current);
-          }, 3000);
+          timeRemainingRef.current = minutesToSeconds(breakDuration);
+          setIsWorkMode(false);
+          setDisplayTime(timeRemainingRef.current);
+          }, 4000);
         } else {
           playSound(breakEndSoundRef);
           setTimeout(() => {
           timeRemainingRef.current = minutesToSeconds(workDuration);
           setIsWorkMode(true);
           setDisplayTime(timeRemainingRef.current);
-
-          }, 3000);
+          }, 4000);
         }
       }
     }, 1000); // Still run every second, but calculate based on real time
@@ -223,7 +218,7 @@ export default function App() {
           <img src="../icon.png" alt="" className="w-8 h-8"/>
           <h1 className="text-md mt-2 font-extrabold text-center">PORO FOCUS</h1>
           </div>
-          <h1 className="mt-2">App By <a className="underline text-decoration-solid" href="https://www.tiktok.com/@havietluc"> Ha Viet Luc</a></h1>
+          <h1 className="mt-2 text-sm">App By <a className="underline text-decoration-solid" href="https://www.tiktok.com/@havietluc"> Ha Viet Luc</a></h1>
       </div>
       <div className="flex-col flex items-center">
         <h3 className="font-light text-sm text-gray-500">Stay productive with cute companions</h3>

@@ -73,7 +73,7 @@ export default function App() {
     const expectedEnd = startTime + timeRemainingRef.current * 1000;
 
     const timer = setInterval(() => {
-      const secondsLeft = Math.max(0, Math.round((expectedEnd - Date.now()) / 1000));
+      const secondsLeft = Math.max(0, Math.floor((expectedEnd - Date.now()) / 1000));
       timeRemainingRef.current = secondsLeft;
       setDisplayTime(secondsLeft);
       const modePrefix = isWorkMode ? " - Work" : " - Break";
@@ -85,18 +85,14 @@ export default function App() {
 
         if (isWorkMode) {
           playSound(workEndSoundRef);
-          setTimeout(() => {
           timeRemainingRef.current = minutesToSeconds(breakDuration);
           setIsWorkMode(false);
           setDisplayTime(timeRemainingRef.current);
-          }, 4000);
         } else {
           playSound(breakEndSoundRef);
-          setTimeout(() => {
           timeRemainingRef.current = minutesToSeconds(workDuration);
           setIsWorkMode(true);
           setDisplayTime(timeRemainingRef.current);
-          }, 4000);
         }
       }
     }, 1000); // Still run every second, but calculate based on real time
@@ -218,7 +214,6 @@ export default function App() {
           <img src="../icon.png" alt="" className="w-8 h-8"/>
           <h1 className="text-md mt-2 font-extrabold text-center">PORO FOCUS</h1>
           </div>
-          <h1 className="mt-2 text-sm">App By <a className="underline text-decoration-solid" href="https://www.tiktok.com/@havietluc"> Ha Viet Luc</a></h1>
       </div>
       <div className="flex-col flex items-center">
         <h3 className="font-light text-sm text-gray-500">Stay productive with cute companions</h3>
@@ -242,11 +237,6 @@ export default function App() {
             `${String(isWorkMode ? workDuration : breakDuration).padStart(2, '0')}:00` :
             formatTime(displayTime)}
         </span>
-
-        {/* Icon display */}
-        {/* <div className="card text-6xl py-4">
-          <h1 className="transition-transform duration-150">{icon}</h1>
-        </div> */}
 
         {/* Control buttons */}
         <div className="flex m-6 justify-center gap-6 w-full">

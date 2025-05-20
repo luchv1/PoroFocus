@@ -216,7 +216,7 @@ export default function App() {
           </div>
       </div>
       <div className="flex-col flex items-center">
-        <h3 className="font-light text-sm text-gray-500">Stay productive with cute companions</h3>
+        <h3 className="font-light text-sm text-gray-500">Don't stop when you're tired, stop when you're done.</h3>
         {/* Mode indicator */}
         <div className="flex gap-2 w-full justify-center p-4">
           {isWorkMode ? <AlarmClock /> : <Coffee />}

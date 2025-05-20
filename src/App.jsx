@@ -134,8 +134,6 @@ export default function App() {
   // Start or pause the timer
   const toggleTimer = useCallback(() => {
     if (!isRunning) {
-      timeRemainingRef.current = minutesToSeconds(isWorkMode ? workDuration : breakDuration);
-      setDisplayTime(timeRemainingRef.current);
       setIsTimeEditMode(false);
     }
     setIsRunning(prev => !prev);

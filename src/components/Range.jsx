@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-export default function Range({title, icon, max, currentValue, onChange}) {
+export default function Range({title, icon, max, currentValue, onChange, isActive}) {
     function handleChange(e) {
         const newValue = Number(e.target.value);
         onChange?.(newValue); // Notify parent of new value n
@@ -12,6 +12,7 @@ export default function Range({title, icon, max, currentValue, onChange}) {
                 <div className="font-bold">{currentValue} min</div>
             </div>
             <input
+                disabled={isActive}
                 type="range"
                 min="5"
                 max={max}

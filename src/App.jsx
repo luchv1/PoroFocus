@@ -33,6 +33,7 @@ export default function App() {
   const [isFocusMode, setIsFocusMode] = useState(false);
   const timeRemainingRef = useRef(0); // Holds actual seconds
   const [displayTime, setDisplayTime] = useState(0);
+  const [isStart, setIsStart] = useState(false);
 
   // Refs for audio elements
   // Ref to audio element, render without re-initializing, ensuring that the same audio objects are used in lifecycle
@@ -75,7 +76,8 @@ export default function App() {
     const timer = setInterval(() => {
       const secondsLeft = Math.max(0, Math.floor((expectedEnd - Date.now()) / 1000));
       timeRemainingRef.current = secondsLeft;
-      setDisplayTime(secondsLeft);
+      setDisplayTime(() => timeRemainingRef.current);
+
       const modePrefix = isWorkMode ? " - Work" : " - Break";
       const runningTitle = formatTime(secondsLeft) + modePrefix;
       document.title = runningTitle;
@@ -109,6 +111,7 @@ export default function App() {
     setWorkDuration(newValue);
     timeRemainingRef.current = 0;
     setIsWorkMode(true);
+    setIsStart(false);
     setIsTimeEditMode(true);
   }, []);
 
@@ -120,6 +123,7 @@ export default function App() {
     setDisplayTime(timeRemainingRef.current);
     setIsWorkMode(false);
     setIsTimeEditMode(true);
+    setIsStart(false);
   }, []);
   
 
@@ -129,22 +133,26 @@ export default function App() {
     setIsTimeEditMode(true);
     timeRemainingRef.current = minutesToSeconds(isWorkMode ? workDuration : breakDuration);
     setDisplayTime(timeRemainingRef.current);
+    setIsStart(false);
   }, []);
 
   // Start or pause the timer
-  const toggleTimer = useCallback(() => {
-    if (!isRunning) {
+  const toggleTimer = (() => {
+    if (!isStart) {
       setIsTimeEditMode(false);
+      timeRemainingRef.current = minutesToSeconds(isWorkMode ? workDuration : breakDuration);
+      setDisplayTime(timeRemainingRef.current);
+      setIsStart(true);
     }
     setIsRunning(prev => !prev);
-  }, [isRunning, isWorkMode, workDuration, breakDuration]);
+  });
 
   // Reset the timer
   const resetTimer = useCallback(() => {
-    setIsRunning(false);
     timeRemainingRef.current = minutesToSeconds(isWorkMode ? workDuration : breakDuration);
     setDisplayTime(timeRemainingRef.current);
     setIsTimeEditMode(true);
+    setIsStart(false);
   }, []);
 
   const changeTaskStatus = ((id) => {
@@ -184,6 +192,7 @@ export default function App() {
             max="90"
             currentValue={workDuration}
             onChange={handleWorkDurationChange}
+            isActive={isRunning}
           />
           <Range
             key="Break"
@@ -192,6 +201,7 @@ export default function App() {
             max="50"
             currentValue={breakDuration}
             onChange={handleBreakDurationChange}
+            isActive={isRunning}
           />
         </div>
       )
